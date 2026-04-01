@@ -13,6 +13,8 @@ export type Activity = {
   lat: number;
   lng: number;
   category: string;
+  experience: string;
+  distanceKm: number;
 };
 
 const anchorLookup: Record<string, Anchor> = {
@@ -21,29 +23,58 @@ const anchorLookup: Record<string, Anchor> = {
   melbourne: { name: 'Melbourne', lat: -37.8136, lng: 144.9631 }
 };
 
-const mudgeeActivities: Activity[] = [
-  { id: '1', name: 'Winery Tour', lat: -32.612, lng: 149.576, category: 'Food & Drink' },
-  { id: '2', name: 'Town Market', lat: -32.587, lng: 149.592, category: 'Shopping' },
-  { id: '3', name: 'Lookout Walk', lat: -32.575, lng: 149.605, category: 'Nature' },
-  { id: '4', name: 'River Picnic', lat: -32.603, lng: 149.61, category: 'Outdoors' },
-  { id: '5', name: 'Art Gallery', lat: -32.594, lng: 149.581, category: 'Culture' }
+const activityTemplates = [
+  { category: 'Food & Drink', experience: 'Guided tasting session with local produce pairing.' },
+  { category: 'Nature', experience: 'Scenic walking track with photo stops at sunset.' },
+  { category: 'Culture', experience: 'Short workshop with local artists and craft makers.' },
+  { category: 'Outdoors', experience: 'Relaxed outdoor session with family-friendly setup.' }
 ];
+
+const createDummyActivities = (anchor: Anchor): Activity[] => {
+  const activities: Activity[] = [];
+
+  for (let index = 0; index < 10; index += 1) {
+    const template = activityTemplates[index % activityTemplates.length];
+    activities.push({
+      id: `east-${index + 1}`,
+      name: `East Experience ${index + 1}`,
+      lat: anchor.lat + 0.008 * (index % 5) - 0.016,
+      lng: anchor.lng + 0.012 + index * 0.005,
+      category: template.category,
+      experience: template.experience,
+      distanceKm: Number((1.1 + index * 0.3).toFixed(1))
+    });
+  }
+
+  for (let index = 0; index < 10; index += 1) {
+    const template = activityTemplates[(index + 1) % activityTemplates.length];
+    activities.push({
+      id: `west-${index + 1}`,
+      name: `West Experience ${index + 1}`,
+      lat: anchor.lat + 0.008 * (index % 5) - 0.016,
+      lng: anchor.lng - 0.012 - index * 0.005,
+      category: template.category,
+      experience: template.experience,
+      distanceKm: Number((1.2 + index * 0.3).toFixed(1))
+    });
+  }
+
+  return activities;
+};
 
 const App = () => {
   const [query, setQuery] = useState('Mudgee');
   const [anchor, setAnchor] = useState<Anchor>(anchorLookup.mudgee);
-  const [selected, setSelected] = useState<Activity | null>(null);
 
   const activities = useMemo(() => {
-    return mudgeeActivities;
-  }, []);
+    return createDummyActivities(anchor);
+  }, [anchor]);
 
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const normalized = query.trim().toLowerCase();
     const found = anchorLookup[normalized] ?? anchorLookup.mudgee;
     setAnchor(found);
-    setSelected(null);
   };
 
   return (
@@ -60,27 +91,12 @@ const App = () => {
           />
           <button type="submit">Set Anchor</button>
         </form>
-        <p className="hint">Showing mock activities around {anchor.name}.</p>
+        <p className="hint">20 dummy activities loaded ({anchor.name} anchor).</p>
       </header>
 
       <main className="map-wrap">
-        <ActivityMap
-          anchor={anchor}
-          activities={activities}
-          onActivityTap={setSelected}
-        />
+        <ActivityMap anchor={anchor} activities={activities} />
       </main>
-
-      <footer className="bottom-sheet" role="status" aria-live="polite">
-        {selected ? (
-          <>
-            <strong>{selected.name}</strong>
-            <span>{selected.category}</span>
-          </>
-        ) : (
-          <span>Tap a node to view an activity.</span>
-        )}
-      </footer>
     </div>
   );
 };
