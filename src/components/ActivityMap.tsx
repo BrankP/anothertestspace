@@ -11,10 +11,15 @@ const Recenter = ({ anchor }: { anchor: Anchor }) => {
   const map = useMap();
 
   useEffect(() => {
-    map.setView([anchor.lat, anchor.lng], 13, { animate: true });
+    map.setView([anchor.lat, anchor.lng], 11, { animate: true });
   }, [anchor, map]);
 
   return null;
+};
+
+const renderStars = (rating: number) => {
+  const fullStars = Math.round(rating);
+  return '★'.repeat(fullStars).padEnd(5, '☆');
 };
 
 const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
@@ -27,7 +32,7 @@ const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
   return (
     <MapContainer
       center={[anchor.lat, anchor.lng]}
-      zoom={13}
+      zoom={11}
       className="leaflet-map"
       zoomControl={false}
       attributionControl={false}
@@ -56,21 +61,50 @@ const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
           <CircleMarker
             key={activity.id}
             center={[activity.lat, activity.lng]}
-            radius={8}
+            radius={7}
             pathOptions={{ color: '#ffcc00', fillColor: '#ffcc00', fillOpacity: 0.95 }}
             eventHandlers={{
               mouseover: () => setActiveNodeId(activity.id),
-              mouseout: () => setActiveNodeId((previous) => (previous === activity.id ? null : previous)),
               click: () => setActiveNodeId(activity.id)
             }}
           >
             {isOpen && (
-              <Tooltip direction="bottom" offset={[0, 12]} permanent className="activity-tooltip">
-                <div className="tooltip-card">
-                  <input type="checkbox" className="tooltip-check" aria-label={`Save ${activity.name}`} />
-                  <strong>{activity.name}</strong>
-                  <span>{activity.experience}</span>
-                  <span>{activity.distanceKm} km from anchor</span>
+              <Tooltip direction="bottom" offset={[0, 14]} permanent className="activity-tooltip">
+                <div className="popup-card" onMouseLeave={() => setActiveNodeId(null)}>
+                  <button
+                    type="button"
+                    className="popup-close"
+                    aria-label="Close popup"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      setActiveNodeId(null);
+                    }}
+                  >
+                    ×
+                  </button>
+
+                  <h3>{activity.name}</h3>
+
+                  <div className="popup-details">
+                    <strong>Details from Google Maps</strong>
+                    <span>{activity.address}</span>
+                    <a href="#" onClick={(event) => event.preventDefault()}>{activity.website}</a>
+                    <span>{activity.phone}</span>
+
+                    <div className="popup-meta-row">
+                      <span className="popup-rating">{activity.rating.toFixed(1)} {renderStars(activity.rating)}</span>
+                      <span className="popup-distance">{activity.distanceKm.toFixed(1)} km away</span>
+                      <a href="#" onClick={(event) => event.preventDefault()}>View in Google Maps</a>
+                    </div>
+                  </div>
+
+                  <label className="popup-itinerary">
+                    <input type="checkbox" aria-label={`Add ${activity.name} to itinerary`} />
+                    <span>Add to itinerary</span>
+                  </label>
+
+                  <p className="popup-experience">{activity.experience}</p>
                 </div>
               </Tooltip>
             )}
