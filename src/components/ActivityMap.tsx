@@ -7,11 +7,14 @@ type ActivityMapProps = {
   activities: Activity[];
 };
 
+const recenterZoom = 11;
+const ragColors = ['#32b64b', '#ffb300', '#ef4444'];
+
 const Recenter = ({ anchor }: { anchor: Anchor }) => {
   const map = useMap();
 
   useEffect(() => {
-    map.setView([anchor.lat, anchor.lng], 11, { animate: true });
+    map.setView([anchor.lat, anchor.lng], recenterZoom, { animate: true });
   }, [anchor, map]);
 
   return null;
@@ -32,7 +35,7 @@ const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
   return (
     <MapContainer
       center={[anchor.lat, anchor.lng]}
-      zoom={11}
+      zoom={recenterZoom}
       className="leaflet-map"
       zoomControl={false}
       attributionControl={false}
@@ -48,29 +51,26 @@ const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
         center={[anchor.lat, anchor.lng]}
         radius={10}
         pathOptions={{ color: '#00e5ff', fillColor: '#00e5ff', fillOpacity: 1 }}
-      >
-        <Tooltip direction="bottom" offset={[0, 10]} permanent>
-          <div className="anchor-tag">{anchor.name} Anchor</div>
-        </Tooltip>
-      </CircleMarker>
+      />
 
-      {activities.map((activity) => {
+      {activities.map((activity, index) => {
         const isOpen = activeNodeId === activity.id;
+        const markerColor = ragColors[index % ragColors.length];
 
         return (
           <CircleMarker
             key={activity.id}
             center={[activity.lat, activity.lng]}
             radius={7}
-            pathOptions={{ color: '#ffcc00', fillColor: '#ffcc00', fillOpacity: 0.95 }}
+            pathOptions={{ color: markerColor, fillColor: markerColor, fillOpacity: 0.95 }}
             eventHandlers={{
               mouseover: () => setActiveNodeId(activity.id),
-              click: () => setActiveNodeId(activity.id)
+              mouseout: () => setActiveNodeId((current) => (current === activity.id ? null : current))
             }}
           >
             {isOpen && (
               <Tooltip direction="bottom" offset={[0, 14]} permanent className="activity-tooltip">
-                <div className="popup-card" onMouseLeave={() => setActiveNodeId(null)}>
+                <div className="popup-card">
                   <button
                     type="button"
                     className="popup-close"
@@ -87,7 +87,6 @@ const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
                   <h3>{activity.name}</h3>
 
                   <div className="popup-details">
-                    <strong>Details from Google Maps</strong>
                     <span>{activity.address}</span>
                     <a href="#" onClick={(event) => event.preventDefault()}>{activity.website}</a>
                     <span>{activity.phone}</span>
@@ -95,16 +94,15 @@ const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
                     <div className="popup-meta-row">
                       <span className="popup-rating">{activity.rating.toFixed(1)} {renderStars(activity.rating)}</span>
                       <span className="popup-distance">{activity.distanceKm.toFixed(1)} km away</span>
-                      <a href="#" onClick={(event) => event.preventDefault()}>View in Google Maps</a>
                     </div>
                   </div>
+
+                  <p className="popup-experience">{activity.experience}</p>
 
                   <label className="popup-itinerary">
                     <input type="checkbox" aria-label={`Add ${activity.name} to itinerary`} />
                     <span>Add to itinerary</span>
                   </label>
-
-                  <p className="popup-experience">{activity.experience}</p>
                 </div>
               </Tooltip>
             )}

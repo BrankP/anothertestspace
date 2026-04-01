@@ -69,11 +69,6 @@ body,
   background: #000;
 }
 
-.anchor-tag {
-  font-size: 0.72rem;
-  color: #d7fbff;
-}
-
 .activity-tooltip .leaflet-tooltip-content {
   margin: 0;
 }
@@ -113,11 +108,6 @@ body,
   flex-direction: column;
   gap: 6px;
   font-size: 0.95rem;
-}
-
-.popup-details strong {
-  color: #6f7377;
-  font-size: 1.25rem;
 }
 
 .popup-details a {
@@ -164,9 +154,5 @@ body,
 
   .popup-card h3 {
     font-size: 1.45rem;
-  }
-
-  .popup-details strong {
-    font-size: 1rem;
   }
 }
