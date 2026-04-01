@@ -1,0 +1,29 @@
+{
+  "name": "leaflet-activities-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/leaflet-activities-app",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.14",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "gh-pages": "^6.1.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}
