@@ -82,6 +82,26 @@ const App = () => {
 
       <main className="map-wrap">
         <ActivityMap anchor={anchor} activities={activities} />
+        <section className="suggested-paths" aria-label="Suggested starting paths">
+          <h2>Suggested starting paths</h2>
+          <div className="viewing-row">
+            <p>Viewing: 3-Day Highlights</p>
+            <button type="button" className="clear-chip">
+              Clear
+            </button>
+          </div>
+          <div className="path-button-row">
+            <button type="button" className="path-button path-button-active">
+              3-Day Highlights
+            </button>
+            <button type="button" className="path-button">
+              Romantic Sydney
+            </button>
+            <button type="button" className="path-button">
+              Hidden + Local
+            </button>
+          </div>
+        </section>
       </main>
     </div>
   );
