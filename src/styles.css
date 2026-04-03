@@ -21,8 +21,8 @@ body,
 
 .top-panel {
   padding: 12px;
-  background: #080808;
-  border-bottom: 1px solid #222;
+  background: #040b1e;
+  border-bottom: 1px solid #122645;
 }
 
 .top-panel h1 {
@@ -60,13 +60,53 @@ body,
 }
 
 .map-wrap {
+  position: relative;
   min-height: 0;
+  background:
+    radial-gradient(circle at 22% 35%, rgba(60, 101, 188, 0.22), transparent 45%),
+    radial-gradient(circle at 78% 22%, rgba(36, 78, 164, 0.2), transparent 40%),
+    radial-gradient(circle at 60% 75%, rgba(25, 56, 122, 0.25), transparent 48%),
+    #020918;
+  overflow: hidden;
+}
+
+.map-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 350;
+  opacity: 0.42;
+  background:
+    radial-gradient(circle at 30% 60%, rgba(145, 188, 255, 0.2) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 67% 28%, rgba(124, 170, 255, 0.18) 0 1px, transparent 1.5px),
+    repeating-linear-gradient(18deg, rgba(125, 165, 244, 0.1) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(-18deg, rgba(65, 113, 201, 0.08) 0 1px, transparent 1px 11px);
+  background-size: 260px 220px, 300px 260px, 100% 100%, 100% 100%;
+  mix-blend-mode: screen;
 }
 
 .leaflet-map {
+  position: relative;
   width: 100%;
   height: 100%;
-  background: #000;
+  background:
+    radial-gradient(circle at 52% 48%, rgba(31, 70, 145, 0.33), transparent 48%),
+    radial-gradient(circle at 48% 45%, rgba(92, 145, 238, 0.1), transparent 58%),
+    #030d24;
+}
+
+.leaflet-map::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(137, 198, 255, 0.16) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 85% 30%, rgba(132, 178, 255, 0.2) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 42% 78%, rgba(174, 207, 255, 0.14) 0 1px, transparent 1.5px);
+  background-size: 280px 200px, 220px 220px, 300px 260px;
+  opacity: 0.55;
 }
 
 .activity-tooltip .leaflet-tooltip-content {
@@ -147,6 +187,95 @@ body,
   font-size: 0.9rem;
 }
 
+.popup-traits {
+  margin: 10px 0 0;
+  color: #425466;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.suggested-paths {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  width: min(92vw, 430px);
+  background: linear-gradient(180deg, rgba(6, 16, 30, 0.9), rgba(4, 12, 24, 0.9));
+  border: 1px solid rgba(133, 170, 223, 0.2);
+  border-radius: 14px;
+  padding: 11px 12px 10px;
+  box-shadow: 0 9px 20px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(4px);
+}
+
+.suggested-paths h2 {
+  margin: 0;
+  text-align: center;
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: #f8fbff;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.viewing-row {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.viewing-row p {
+  margin: 0;
+  color: #9cb9dd;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.clear-chip {
+  border: 1px solid rgba(106, 157, 231, 0.5);
+  background: rgba(7, 22, 44, 0.5);
+  color: #93bdf3;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 5px 10px 6px;
+  cursor: pointer;
+}
+
+.path-button-row {
+  margin-top: 10px;
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.path-button {
+  border: 1px solid rgba(140, 170, 209, 0.34);
+  background: rgba(6, 16, 33, 0.84);
+  color: rgba(241, 246, 255, 0.95);
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 560;
+  letter-spacing: 0.01em;
+  padding: 6px 11px 7px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.path-button-active {
+  border-color: rgba(104, 170, 255, 0.95);
+  background: linear-gradient(180deg, rgba(11, 74, 164, 0.85), rgba(7, 42, 98, 0.85));
+  box-shadow:
+    0 0 0 1px rgba(114, 179, 255, 0.32),
+    0 10px 18px rgba(2, 17, 45, 0.38);
+}
+
 @media (max-width: 640px) {
   .popup-card {
     width: min(92vw, 340px);
@@ -154,5 +283,40 @@ body,
 
   .popup-card h3 {
     font-size: 1.45rem;
+  }
+
+  .suggested-paths {
+    width: calc(100% - 16px);
+    bottom: 10px;
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .suggested-paths h2 {
+    font-size: 0.9rem;
+  }
+
+  .viewing-row {
+    margin-top: 7px;
+    gap: 7px;
+  }
+
+  .viewing-row p {
+    font-size: 0.72rem;
+  }
+
+  .clear-chip {
+    font-size: 0.68rem;
+    padding: 5px 9px;
+  }
+
+  .path-button-row {
+    margin-top: 8px;
+    gap: 6px;
+  }
+
+  .path-button {
+    font-size: 0.7rem;
+    padding: 6px 9px;
   }
 }
