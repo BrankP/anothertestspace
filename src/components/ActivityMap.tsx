@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { CircleMarker, MapContainer, TileLayer, Tooltip, useMap } from 'react-leaflet';
-import type { Activity, Anchor } from '../App';
+import type { Activity, ActivityTrait, Anchor } from '../App';
 
 type ActivityMapProps = {
   anchor: Anchor;
   activities: Activity[];
+  highlightedTraits: ActivityTrait[];
 };
 
 const recenterZoom = 11;
@@ -25,8 +26,9 @@ const renderStars = (rating: number) => {
   return '★'.repeat(fullStars).padEnd(5, '☆');
 };
 
-const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
+const ActivityMap = ({ anchor, activities, highlightedTraits }: ActivityMapProps) => {
   const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
+  const hasPathFilter = highlightedTraits.length > 0;
 
   useEffect(() => {
     setActiveNodeId(null);
@@ -56,13 +58,19 @@ const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
       {activities.map((activity, index) => {
         const isOpen = activeNodeId === activity.id;
         const markerColor = ragColors[index % ragColors.length];
+        const isHighlighted = !hasPathFilter || activity.traits.some((trait) => highlightedTraits.includes(trait));
 
         return (
           <CircleMarker
             key={activity.id}
             center={[activity.lat, activity.lng]}
             radius={7}
-            pathOptions={{ color: markerColor, fillColor: markerColor, fillOpacity: 0.95 }}
+            pathOptions={{
+              color: markerColor,
+              fillColor: markerColor,
+              fillOpacity: isHighlighted ? 0.95 : 0.4,
+              opacity: isHighlighted ? 1 : 0.45
+            }}
             eventHandlers={{
               mouseover: () => setActiveNodeId(activity.id),
               mouseout: () => setActiveNodeId((current) => (current === activity.id ? null : current))
@@ -98,6 +106,7 @@ const ActivityMap = ({ anchor, activities }: ActivityMapProps) => {
                   </div>
 
                   <p className="popup-experience">{activity.experience}</p>
+                  <p className="popup-traits">Traits: {activity.traits.join(', ')}</p>
 
                   <label className="popup-itinerary">
                     <input type="checkbox" aria-label={`Add ${activity.name} to itinerary`} />
